@@ -1,15 +1,16 @@
 language: php
 php:
-  - '5.5'
-  - '5.4'
-  - '5.3'
+- '5.5'
+- '5.4'
+- '5.3'
 env:
   global:
-    secure: V8aW+aAwXMzPckjoPH6nls86NqoHPHWJYwwGO47n4xYKsgHHHWaerh7Ggtuit+u24YXgrETLxKa0chadN9REOGw6aNae9eIgM6w8+5dS2llmCCoCTmz+bhoT+tq84GS6IJMEIr2lEInPzQre5FJEU6HEn4FAFFA3tgJa89/pAv0=
+  - secure: Vhsc9USougyZB5AGE3166Pj6QpwYT4xYbO/XALNLQ+c2DOSUvlDk+MbUB6CSWWsHTMZAvY+LwmjFFRazLKCHMmUYxxdIBk/L4Rbf2giYZivfY3hVksnokEgef9f0HxP4EldNu3XsniItkaOBUyYuq6xpSTeytviVSASvL8cuK68=
+  - secure: DtocjNntEE+K8ABztKlC6bVmusObAqubpK2WO8LiMkxnsE2cck8C7FsRmM8bTGMHNWdjRo3wucLIOuT3NOCSHCBfB9Go2QZGz9BKzO1S2irOexg9JV6AK/PFfViQiVHiFIwBAmBjW8I0clMflgdgUzFVo45WXnpPpJAZ0IM3mwo=
 before_install:
-  - sudo apt-get update -qq
-  - sudo apt-get install -qq php5-imap
+- sudo apt-get update -qq
+- sudo apt-get install -qq php5-imap
 before_script:
-  - echo "extension=imap.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-  - composer install --dev
+- echo "extension=imap.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+- composer install --dev
 script: phpunit --coverage-text
