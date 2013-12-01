@@ -45,9 +45,10 @@ class Headers
         if (isset($this->array['to'])) {
             $recipients = array();
             foreach ($this->array['to'] as $to) {
+                if(isset($to->mailbox))
                 $recipients[] = new EmailAddress(
                     str_replace('\'', '', $to->mailbox),
-                    str_replace('\'', '', $to->host),
+                    isset($to->host) ? str_replace('\'', '', $to->host) : null,
                     isset($to->personal) ? \imap_utf8($to->personal) : null
                 );
             }
