@@ -134,11 +134,7 @@ class Part implements \RecursiveIterator
     public function getContent()
     {
         if (null === $this->content) {
-            $this->content = \imap_fetchbody(
-                $this->stream,
-                $this->messageNumber,
-                $this->partNumber ?: 1
-            );
+            $this->content = $this->doGetContent();
         }
 
         return $this->content;
@@ -173,7 +169,9 @@ class Part implements \RecursiveIterator
             // If this part is a text part, try to convert its encoding to UTF-8.
             // We don't want to convert an attachment's encoding.
             if ($this->getType() === self::TYPE_TEXT
-                && strtolower($this->getCharset()) != 'utf-8') {
+                && null !== $this->getCharset()
+                && strtolower($this->getCharset()) != 'utf-8'
+            ) {
                 $this->decodedContent = \mb_convert_encoding(
                     $this->decodedContent,
                     'UTF-8'
@@ -252,7 +250,7 @@ class Part implements \RecursiveIterator
     /**
      * Get an array of all parts for this message
      *
-     * @return Message\Part[]
+     * @return self[]
      */
     public function getParts()
     {
@@ -297,5 +295,24 @@ class Part implements \RecursiveIterator
     public function getDisposition()
     {
         return $this->disposition;
+    }
+
+    /**
+     * Get raw message content
+     *
+     * @param bool $keepUnseen Whether to keep the message unseen.
+     *                         Default behaviour is set set the seen flag when
+     *                         getting content.
+     *
+     * @return string
+     */
+    protected function doGetContent($keepUnseen = false)
+    {
+        return \imap_fetchbody(
+            $this->stream,
+            $this->messageNumber,
+            $this->partNumber ?: 1,
+            \FT_UID | ($keepUnseen ? \FT_PEEK : null)
+        );
     }
 }

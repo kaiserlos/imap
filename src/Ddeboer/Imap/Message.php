@@ -3,6 +3,8 @@
 namespace Ddeboer\Imap;
 
 use Ddeboer\Imap\Message\EmailAddress;
+use Ddeboer\Imap\Exception\MessageDeleteException;
+use Ddeboer\Imap\Exception\MessageMoveException;
 
 /**
  * An IMAP message (e-mail)
@@ -12,6 +14,11 @@ class Message extends Message\Part
     protected $stream;
     protected $headers;
     protected $attachments;
+
+    /**
+     * @var boolean
+     */
+    protected $keepUnseen = false;
 
     /**
      * Constructor
@@ -90,6 +97,20 @@ class Message extends Message\Part
     }
 
     /**
+     * Get raw part content
+     *
+     * @return string
+     */
+    public function getContent()
+    {
+        // Null headers, so subsequent calls to getHeaders() will return
+        // updated seen flag
+        $this->headers = null;
+
+        return $this->doGetContent($this->keepUnseen);
+    }
+
+    /**
      * Get message answered flag value (from headers)
      *
      * @return boolean
@@ -117,6 +138,16 @@ class Message extends Message\Part
     public function isDraft()
     {
         return $this->getHeaders()->get('draft');
+    }
+
+    /**
+     * Has the message been marked as read?
+     *
+     * @return boolean
+     */
+    public function isSeen()
+    {
+        return 'U' != $this->getHeaders()->get('unseen');
     }
 
     /**
@@ -216,15 +247,6 @@ class Message extends Message\Part
     }
 
     /**
-     * Load message structure
-     */
-    protected function loadStructure()
-    {
-        $structure = \imap_fetchstructure($this->stream, $this->messageNumber);
-        $this->parseStructure($structure);
-    }
-
-    /**
      * Delete message
      */
     public function delete()
@@ -232,16 +254,49 @@ class Message extends Message\Part
         // 'deleted' header changed, force to reload headers, would be better to set deleted flag to true on header
         $this->headers = null;
 
-        return \imap_delete($this->stream, $this->messageNumber);
+        if (!\imap_delete($this->stream, $this->messageNumber)) {
+            throw new MessageCannotBeDeletedException($this->messageNumber);
+        }
     }
 
     /**
      * Move message to another mailbox
      * @param Mailbox $mailbox
-     * @return bool
+     *
+     * @throws MessageMoveException
+     * @return Message
      */
     public function move(Mailbox $mailbox)
     {
-        return \imap_mail_move($this->stream, $this->messageNumber, $mailbox->getName());
+        if (!\imap_mail_move($this->stream, $this->messageNumber, $mailbox->getName(), \CP_UID)) {
+            throw new MessageMoveException($this->messageNumber, $mailbox->getName());
+        }
+
+        return $this;
+    }
+
+    /**
+     * Prevent the message from being marked as seen
+     *
+     * Defaults to false, so messages that are read will be marked as seen.
+     *
+     * @param bool $bool
+     *
+     * @return Message
+     */
+    public function keepUnseen($bool = true)
+    {
+        $this->keepUnseen = (bool) $bool;
+
+        return $this;
+    }
+
+    /**
+     * Load message structure
+     */
+    protected function loadStructure()
+    {
+        $structure = \imap_fetchstructure($this->stream, $this->messageNumber, \FT_UID);
+        $this->parseStructure($structure);
     }
 }

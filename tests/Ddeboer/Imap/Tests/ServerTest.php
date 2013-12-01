@@ -6,13 +6,12 @@ use Ddeboer\Imap\Server;
 
 class ServerTest extends \PHPUnit_Framework_TestCase
 {
-    public function testAuthorize()
+    /**
+     * @expectedException \Ddeboer\Imap\Exception\AuthenticationFailedException
+     */
+    public function testFailedAuthenticate()
     {
-        $password = $_ENV['GMAIL_PASSWORD'];
-
-        $server = new Server('gmail.com');
-        $result = $server->authenticate('ddeboerimap', $password);
-
-        $this->assertInstanceOf('\Ddeboer\Imap\Connection', $result);
+        $server = new Server('imap.gmail.com');
+        $server->authenticate('fake_username', 'fake_password');
     }
 }

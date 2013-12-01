@@ -4,6 +4,10 @@ namespace Ddeboer\Imap;
 
 use Ddeboer\Imap\Exception\AuthenticationFailedException;
 
+/**
+ * An IMAP server
+ *
+ */
 class Server
 {
     /**
@@ -21,6 +25,9 @@ class Server
      */
     protected $flags;
 
+    /**
+     * @var Connection
+     */
     protected $connection;
 
     /**
@@ -35,16 +42,6 @@ class Server
         $this->hostname = $hostname;
         $this->port = $port;
         $this->flags = '/'.ltrim($flags, '/');
-    }
-
-    /**
-     * Glues hostname, port and flags and returns result
-     *
-     * @return string
-     */
-    protected function getServerString()
-    {
-        return "{{$this->hostname}:{$this->port}{$this->flags}}";
     }
 
     /**
@@ -73,5 +70,15 @@ class Server
         imap_alerts();
 
         return new Connection($resource, $this->connection);
+    }
+
+    /**
+     * Glues hostname, port and flags and returns result
+     *
+     * @return string
+     */
+    protected function getServerString()
+    {
+        return "{{$this->hostname}:{$this->port}{$this->flags}}";
     }
 }
