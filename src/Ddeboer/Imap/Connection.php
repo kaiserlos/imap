@@ -103,7 +103,8 @@ class Connection
      * @return bool
      */
     public function close($flag = 0)
-    {
+    {   
+        \imap_expunge($this->resource);
         return \imap_close($this->resource, $flag);
     }
 
