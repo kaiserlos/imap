@@ -1,8 +1,9 @@
 IMAP library
 ============
-[![Build Status](https://travis-ci.org/ddeboer/imap.png?branch=master)](https://travis-ci.org/ddeboer/imap)
-[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/ddeboer/imap/badges/quality-score.png?s=a83ac467d051bcf7814c775e44c7f7c9c33e70ff)](https://scrutinizer-ci.com/g/ddeboer/imap/)
-[![Code Coverage](https://scrutinizer-ci.com/g/ddeboer/imap/badges/coverage.png?s=3e48db42c17436dc8a485042da691d46a3bec28f)](https://scrutinizer-ci.com/g/ddeboer/imap/)
+[![Build Status](https://travis-ci.org/ddeboer/imap.svg?branch=master)](https://travis-ci.org/ddeboer/imap)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/ddeboer/imap/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/ddeboer/imap/?branch=master)
+[![Code Coverage](https://scrutinizer-ci.com/g/ddeboer/imap/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/ddeboer/imap/?branch=master)
+[![Latest Stable Version](https://poser.pugx.org/ddeboer/imap/v/stable.svg)](https://packagist.org/packages/ddeboer/imap) 
 
 A PHP 5.3+ library to read and process e-mails over IMAP.
 
@@ -37,7 +38,7 @@ over them:
 ```php
 $mailboxes = $connection->getMailboxes();
 
-foreach ($mailboxes and $mailbox) {
+foreach ($mailboxes as $mailbox) {
     // $mailbox is instance of \Ddeboer\Imap\Mailbox
     printf('Mailbox %s has %s messages', $mailbox->getName(), $mailbox->count());
 }

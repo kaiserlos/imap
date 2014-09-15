@@ -171,8 +171,8 @@ class Message extends Message\Part
             // \imap_header is much faster than \imap_fetchheader
             // \imap_header returns only a subset of all mail headers,
             // but it does include the message flags.
-            // messageNumber contains the msg uid, imap_headers
-            $headers = \imap_header($this->stream, imap_msgno($this->stream, $this->messageNumber)); 
+            $headers = \imap_header($this->stream, \imap_msgno($this->stream, $this->messageNumber));
+
             $this->headers = new Message\Headers($headers);
         }
 
@@ -224,8 +224,8 @@ class Message extends Message\Part
                 if ($part instanceof Message\Attachment) {
                     $this->attachments[] = $part;
                 }
-                if($part->hasChildren()) {
-                    foreach($part->getParts() AS $child_part) {
+                if ($part->hasChildren()) {
+                    foreach ($part->getParts() as $child_part) {
                         if ($child_part instanceof Message\Attachment) {
                             $this->attachments[] = $child_part;
                         }
@@ -249,14 +249,21 @@ class Message extends Message\Part
 
     /**
      * Delete message
+     *
+     * @throws MessageDeleteException
      */
     public function delete()
     {
         // 'deleted' header changed, force to reload headers, would be better to set deleted flag to true on header
         $this->headers = null;
 
+<<<<<<< HEAD
         if (!\imap_delete($this->stream, $this->messageNumber,FT_UID)) {
             throw new MessageCannotBeDeletedException($this->messageNumber);
+=======
+        if (!\imap_delete($this->stream, $this->messageNumber, \FT_UID)) {
+            throw new MessageDeleteException($this->messageNumber);
+>>>>>>> main_repo_master
         }
     }
 
