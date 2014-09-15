@@ -257,13 +257,10 @@ class Message extends Message\Part
         // 'deleted' header changed, force to reload headers, would be better to set deleted flag to true on header
         $this->headers = null;
 
-<<<<<<< HEAD
-        if (!\imap_delete($this->stream, $this->messageNumber,FT_UID)) {
-            throw new MessageCannotBeDeletedException($this->messageNumber);
-=======
+
         if (!\imap_delete($this->stream, $this->messageNumber, \FT_UID)) {
             throw new MessageDeleteException($this->messageNumber);
->>>>>>> main_repo_master
+
         }
     }
 
