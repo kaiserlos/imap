@@ -3,6 +3,7 @@
 namespace Ddeboer\Imap;
 
 use Ddeboer\Transcoder\Transcoder;
+use Ddeboer\Transcoder\Exception\IllegalCharacterException;
 
 class Parameters
 {
@@ -38,7 +39,14 @@ class Parameters
         foreach ($parts as $part) {
             $charset = 'default' == $part->charset ? 'auto' : $part->charset;
             // imap_utf8 doesn't seem to work properly, so use Transcoder instead
-            $decoded .= Transcoder::create()->transcode($part->text, $charset);
+            
+            // Got from: https://github.com/Sawered/imap/commit/e739b7221c6e57521b38f7b56f78ba399acda888
+            try{
+                $decoded .= Transcoder::create()->transcode($part->text, $charset);
+            } catch(IllegalCharacterException $e){
+                //no warn, it is reality, handle it somehow
+                $decoded = imap_utf8($part->text);
+            }
         }
         
         return $decoded;
