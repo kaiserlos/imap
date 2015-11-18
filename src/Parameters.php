@@ -4,6 +4,7 @@ namespace Ddeboer\Imap;
 
 use Ddeboer\Transcoder\Transcoder;
 use Ddeboer\Transcoder\Exception\IllegalCharacterException;
+use Ddeboer\Transcoder\Exception\UndetectableEncodingException;
 
 class Parameters
 {
@@ -40,10 +41,10 @@ class Parameters
             $charset = 'default' == $part->charset ? 'auto' : $part->charset;
             // imap_utf8 doesn't seem to work properly, so use Transcoder instead
             
-            // Got from: https://github.com/Sawered/imap/commit/e739b7221c6e57521b38f7b56f78ba399acda888
+            // Got from: https://github.com/Sawered/imap/commit/e739b7221c6e57521b38f7b56f78ba399acda888 and changed to UndetectableEncodingException
             try{
                 $decoded .= Transcoder::create()->transcode($part->text, $charset);
-            } catch(IllegalCharacterException $e){
+            } catch(UndetectableEncodingException $e){
                 //no warn, it is reality, handle it somehow
                 $decoded = imap_utf8($part->text);
             }
