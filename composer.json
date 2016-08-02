@@ -13,14 +13,14 @@
             "homepage": "https://github.com/ddeboer/imap/graphs/contributors"
         }
     ],
-    "require": {
+     "require": {
         "php": ">=5.4.0",
         "ext-imap": "*",
-        "ext-iconv": "*",
-        "ext-mbstring": "*",
-        "eugene-matvejev/transcoder": "1.0.4"
+        "ddeboer/transcoder": "~1"
     },
     "require-dev": {
+        "ext-mbstring": "*",
+        "ext-iconv": "*",
         "phpunit/phpunit": "~4.0"
     },
     "autoload": {
